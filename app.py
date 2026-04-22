@@ -1,10 +1,20 @@
 from flask import Flask, request, jsonify
 import time
+from datetime import datetime
+import os
+from groq import Groq
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
 # =========================
-# DAY 2: PRIMARY PROMPT
+# LOAD ENV + GROQ CLIENT
+# =========================
+load_dotenv()
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+# =========================
+# DAY 2 PROMPT (REUSED)
 # =========================
 PRIMARY_PROMPT = """
 You are CampusPe AI, a student-friendly text analysis assistant.
@@ -29,11 +39,13 @@ User Input:
 Response:
 """
 
+# =========================
+# ROUTES
+# =========================
 
 @app.route("/")
 def home():
     return {"message": "AI Service Running"}
-
 
 @app.route("/health", methods=["GET"])
 def health():
@@ -42,7 +54,9 @@ def health():
         "message": "AI Service is running"
     }
 
-
+# =========================
+# DAY 3: DESCRIBE ENDPOINT
+# =========================
 @app.route("/describe", methods=["POST"])
 def describe():
     start_time = time.time()
@@ -50,63 +64,40 @@ def describe():
     try:
         data = request.get_json()
 
-        if not data or "text" not in data:
+        # ✅ Input validation
+        if not data or "input" not in data:
             return jsonify({
                 "status": "error",
-                "message": "Please provide 'text' in request body"
+                "message": "Please provide 'input' in request body"
             }), 400
 
-        text = data["text"]
+        user_input = data["input"]
 
-        # =========================
-        # BASIC ANALYSIS (DAY 1 LOGIC)
-        # =========================
-        words = text.split()
-        word_count = len(words)
-        char_count = len(text)
+        # ✅ Load prompt
+        prompt = PRIMARY_PROMPT.format(text=user_input)
 
-        summary = " ".join(words[:5]) if words else ""
+        # ✅ Call Groq API (UPDATED MODEL)
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
 
-        positive_words = ["good", "great", "happy", "excellent", "awesome", "nice", "love"]
-        negative_words = ["bad", "sad", "terrible", "worst", "poor", "hate"]
-
-        sentiment = "neutral"
-        for word in words:
-            lw = word.lower()
-            if lw in positive_words:
-                sentiment = "positive"
-                break
-            elif lw in negative_words:
-                sentiment = "negative"
-                break
-
-        # =========================
-        # DAY 2 PROMPT INTEGRATION
-        # =========================
-        prompt_used = PRIMARY_PROMPT.format(text=text)
+        ai_output = response.choices[0].message.content
 
         response_time = round((time.time() - start_time) * 1000, 2)
 
+        # ✅ Final structured response
         return jsonify({
             "status": "success",
-            "input_text": text,
-
-            # Prompt layer (Day 2 addition)
-            "prompt_used": prompt_used,
-
-            # Analysis output
-            "analysis": {
-                "word_count": word_count,
-                "character_count": char_count,
-                "summary": summary,
-                "sentiment": sentiment
-            },
-
+            "input": user_input,
+            "output": ai_output,
+            "generated_at": datetime.utcnow().isoformat(),
             "meta": {
-                "response_time_ms": response_time
-            },
-
-            "message": "Text analyzed successfully using CampusPe Day 2 prompt system"
+                "response_time_ms": response_time,
+                "model_used": "llama-3.1-8b-instant"
+            }
         })
 
     except Exception as e:
@@ -117,5 +108,8 @@ def describe():
         }), 500
 
 
+# =========================
+# RUN APP
+# =========================
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
