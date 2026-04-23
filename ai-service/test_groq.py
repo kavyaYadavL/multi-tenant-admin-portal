@@ -3,6 +3,7 @@ import time
 import logging
 from groq import Groq
 from dotenv import load_dotenv
+from services.groq_client import GroqClient
 
 # Load environment variables
 load_dotenv()
@@ -44,13 +45,13 @@ class GroqTestClient:
 
 
 if __name__ == "__main__":
-    client = GroqTestClient()
+    client = GroqClient()
 
-    test_prompt = "Explain AI in one sentence."
-    result = client.generate_response(test_prompt)
+    result = client.generate("Give 3 benefits of AI")
 
     if result:
-        print("\nAI Response:\n")
-        print(result)
+        print("\nResponse:\n")
+        print(result["content"])
+        print("\nMetadata:", result)
     else:
-        print("\nFailed to get response")
+        print("\nFailed after retries")
