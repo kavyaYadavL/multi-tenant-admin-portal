@@ -1,0 +1,12 @@
+.env
+target/
+*.class
+
+# Mobile/Web debris (as requested)
+node_modules/
+__pycache__/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
