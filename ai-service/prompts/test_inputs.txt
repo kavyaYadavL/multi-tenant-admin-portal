@@ -1,0 +1,10 @@
+SQL injection attack
+Phishing email scam
+Weak password usage
+Data breach
+Malware infection
+Insider threat
+Unpatched software vulnerability
+Ransomware attack
+Cloud misconfiguration
+Social engineering attack

@@ -26,33 +26,43 @@ class GroqClient:
     def generate(
         self,
         prompt: str,
-        temperature: float = 0.7,
-        max_tokens: int = 300,
+        system_prompt: Optional[str] = None,
+        temperature: float = 0.3,   # 🔥 lower for consistency
+        max_tokens: int = 150,
         retries: int = 3
     ) -> Optional[Dict[str, Any]]:
-        """
-        Calls Groq API with retry + backoff and returns structured response
-        """
 
         for attempt in range(1, retries + 1):
             try:
                 start_time = time.time()
 
+                messages = []
+
+                if system_prompt:
+                    messages.append({
+                    "role": "system",
+                    "content": system_prompt
+                    })
+                else:
+                    messages.append({
+                        "role": "system",
+                        "content": "You are a helpful AI assistant."
+                    })
+
+                messages.append({
+                    "role": "user",
+                    "content": prompt
+                })
+
                 response = self.client.chat.completions.create(
                     model=self.model,
-                    messages=[
-                        {"role": "system", "content": "You are a helpful AI assistant."},
-                        {"role": "user", "content": prompt}
-                    ],
+                    messages=messages,
                     temperature=temperature,
                     max_tokens=max_tokens
                 )
 
                 duration = round(time.time() - start_time, 2)
-
                 content = response.choices[0].message.content
-
-                logger.info(f"[Groq] Success in {duration}s (attempt {attempt})")
 
                 return {
                     "content": content,
@@ -62,13 +72,6 @@ class GroqClient:
                 }
 
             except Exception as e:
-                wait_time = 2 ** attempt  # exponential backoff
-                logger.error(f"[Groq] Attempt {attempt} failed: {str(e)}")
-
-                if attempt < retries:
-                    logger.info(f"[Groq] Retrying in {wait_time}s...")
-                    time.sleep(wait_time)
-                else:
-                    logger.error("[Groq] All retry attempts failed")
+                time.sleep(2 ** attempt)
 
         return None
