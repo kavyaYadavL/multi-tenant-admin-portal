@@ -192,3 +192,26 @@ No Critical or High vulnerabilities were found.
 All important security headers were implemented, and identified risks were mitigated to an acceptable level for development. 
 
 ZAP report generated locally for verification.
+
+---
+
+## Day 8 — Unit Testing
+
+### Objective
+Validate API behavior, input validation, and security mechanisms using pytest.
+
+### Tests Implemented
+- Health endpoint response
+- Root endpoint response
+- Empty input validation
+- SQL injection rejection
+- Prompt injection rejection
+- Valid input acceptance
+- Rate limiting behavior
+- Security headers verification
+
+### Result
+All 8 tests passed successfully.
+
+### Conclusion
+The AI service endpoints are functioning correctly with proper validation, security checks, and response handling.
