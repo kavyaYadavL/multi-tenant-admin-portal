@@ -144,3 +144,51 @@ Evaluate and improve AI prompt quality using real inputs.
 ### Conclusion
 Prompt tuning significantly improved AI response quality.  
 Structured prompts with strict rules ensured consistent and accurate outputs.
+
+---
+
+## Day 7 — OWASP ZAP Scan
+
+### Scan Summary
+OWASP ZAP automated scan was performed on the local Flask AI service at:
+http://127.0.0.1:5000
+
+---
+
+### Findings
+The scan identified the following issues:
+
+- Content Security Policy (CSP) Header Not Fully Defined
+- X-Content-Type-Options Header Missing (initially)
+- Server Version Information Leakage
+
+---
+
+### Fixes Applied
+- Added `Content-Security-Policy` header to restrict sources
+- Added `X-Content-Type-Options: nosniff`
+- Added `X-Frame-Options: DENY`
+- Added `X-XSS-Protection` header
+- Disabled Flask debug mode to prevent information leakage
+- Attempted to mask server information in response headers
+
+---
+
+### Remaining Issues (Low Risk)
+- CSP fallback directives not fully configured
+- Server version header partially exposed due to Flask development server
+
+---
+
+### Plan for Medium Fixes
+- Implement stricter CSP rules with fallback directives
+- Move to production WSGI server (e.g., Gunicorn) to fully hide server details
+- Add authentication and CSRF protection in later phases
+
+---
+
+### Conclusion
+No Critical or High vulnerabilities were found.  
+All important security headers were implemented, and identified risks were mitigated to an acceptable level for development. 
+
+ZAP report generated locally for verification.
