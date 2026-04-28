@@ -95,3 +95,52 @@ Prompt injection detection is working correctly.
 
 ### Overall Summary
 All tested inputs (empty, SQL injection, prompt injection) were handled safely without system compromise.
+
+---
+
+## Day 6 — Prompt Tuning
+
+### Objective
+Evaluate and improve AI prompt quality using real inputs.
+
+---
+
+### Testing Approach
+- Used 10 real-world cybersecurity inputs
+- Each response was manually scored from 1–10
+- Evaluation criteria:
+  - Correct structure (Definition, Impact, Example)
+  - Clarity and relevance
+  - No extra or missing sections
+
+---
+
+### Initial Observation
+- Some responses were missing the **Example** section
+- Outputs were inconsistent in format
+- Average score was below 7
+
+---
+
+### Improvements Made
+- Updated prompt to enforce strict structure:
+  - Definition
+  - Impact
+  - Example (mandatory)
+- Reduced response length
+- Lowered temperature for consistent output
+
+---
+
+### Final Results
+- All responses followed required structure
+- No extra sections (e.g., tips, lists)
+- Outputs became concise and consistent
+
+**Final Average Score: 7.5 / 10**
+
+---
+
+### Conclusion
+Prompt tuning significantly improved AI response quality.  
+Structured prompts with strict rules ensured consistent and accurate outputs.
