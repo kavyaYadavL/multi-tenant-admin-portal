@@ -9,8 +9,10 @@ com\internship\tool\dto\LoginRequest.class
 com\internship\tool\dto\TenantDTO$TenantDTOBuilder.class
 com\internship\tool\entity\User.class
 com\internship\tool\entity\User$UserBuilder.class
+com\internship\tool\service\EmailService.class
 com\internship\tool\dto\TenantDTO.class
 com\internship\tool\entity\Tenant$TenantBuilder.class
+com\internship\tool\service\NotificationScheduler.class
 com\internship\tool\entity\Tenant.class
 com\internship\tool\service\AuthService.class
 com\internship\tool\exception\NotFoundException.class
