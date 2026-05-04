@@ -10,6 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 
 @Service
 @RequiredArgsConstructor
@@ -37,11 +40,35 @@ public class TenantService {
         return tenantRepository.findAll(pageable).map(this::mapToDTO);
     }
 
+    @Cacheable(value = "tenants", key = "#id")
     public TenantDTO getTenantById(Long id) {
         Tenant tenant = tenantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Tenant not found with id: " + id));
         return mapToDTO(tenant);
     }
+
+    @Transactional
+    @CachePut(value = "tenants", key = "#id")
+    public TenantDTO updateTenant(Long id, TenantDTO tenantDTO) {
+        Tenant tenant = tenantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tenant not found with id: " + id));
+
+        tenant.setName(tenantDTO.getName());
+        tenant.setDescription(tenantDTO.getDescription());
+        tenant.setStatus(tenantDTO.getStatus());
+
+        Tenant updatedTenant = tenantRepository.save(tenant);
+        return mapToDTO(updatedTenant);
+    }
+
+    @Transactional
+    @CacheEvict(value = "tenants", key = "#id")
+    public void deleteTenant(Long id) {
+        Tenant tenant = tenantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tenant not found with id: " + id));
+        tenantRepository.delete(tenant);
+    }
+
 
     private TenantDTO mapToDTO(Tenant tenant) {
         return TenantDTO.builder()
