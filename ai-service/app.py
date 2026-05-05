@@ -1,3 +1,17 @@
+# Mock knowledge base (acts like ChromaDB)
+knowledge_base = [
+    "AI improves automation in business processes",
+    "Cloud computing enables scalable applications",
+    "Cybersecurity protects systems from threats",
+    "Machine learning models learn from data",
+    "APIs enable communication between services",
+    "Microservices architecture improves modularity",
+    "Data analytics helps in decision making",
+    "DevOps improves deployment speed",
+    "Blockchain ensures secure transactions",
+    "IoT connects devices over the internet"
+]
+
 from flask import Flask, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
