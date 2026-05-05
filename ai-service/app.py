@@ -1,3 +1,8 @@
+from sentence_transformers import SentenceTransformer
+
+# Preload model at startup
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
 from flask import Flask, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
