@@ -1,5 +1,6 @@
-flask
-requests
-python-dotenv
-groq
-flask-limiter
+flask==2.3.2
+requests==2.31.0
+python-dotenv==1.0.0
+groq==0.4.1
+flask-limiter==3.5.0
+sentence-transformers==2.2.2
